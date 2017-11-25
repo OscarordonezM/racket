@@ -1,0 +1,55 @@
+#lang racket
+(require db)
+
+(define pgc
+(mysql-connect   #:server "localhost"
+                 #:port 3306
+                 #:database "AquaBot"
+                 #:user "root"
+                 ))
+;consulta de select
+(query-rows pgc "select * from persona")
+
+;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;INSERTAR UNA PERSONA
+;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(define cedula(read))
+(define nombres(read))
+(define apellidos(read))
+(define fechaNacimiento(read))
+(define genero(read))
+(define estrato(read))
+(define estudios(read))
+(define familiares(read))
+(define consultaInsertPersona (string-append "INSERT INTO PERSONA (`perCedula`, `perNombres`, `perApellidos`,
+`perFechaNacimiento`, `perSexo`, `perEstrato`, `perEstudios`, `perNumPersonasVivienda`)
+VALUES ("(number->string cedula)",'"(symbol->string nombres)"','"(symbol->string apellidos)"',
+'"(symbol->string fechaNacimiento)"','"(symbol->string genero)"',"(number->string estrato)",'"(symbol->string estudios)"',"(number->string familiares)")"))
+(query-exec pgc consultaInsertPersona)
+
+
+
+;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;INSERTAR UN CONSUMO
+;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+(query-rows pgc "select perCedula, perSexo, perEstrato from persona")
+
+(define consumoMensual(read))
+(define fechaConsumo(read))
+(define cedulaI(read))
+
+(define consultaInsertConsumo (string-append "INSERT INTO CONSUMOMENSUAL (`comConsumoMensual`, `comFecha`, `comCedula`)
+VALUES ("(number->string consumoMensual)",'"(symbol->string fechaConsumo)"',"(number->string cedulaI)")"))
+(query-exec pgc consultaInsertConsumo)
+
+
+;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+;LÓGICA GENERAR RECIBO
+;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+(vector->values (car(query-rows pgc "select perCedula, perSexo, perEstrato from persona Where perCedula = 123")) 0 3)
+
+

@@ -1,0 +1,21 @@
+#lang racket
+(require db)
+
+(define pgc
+(mysql-connect   #:server "localhost"
+                 #:port 3306
+                 #:database "AquaBot"
+                 #:user "root"
+                 ))
+
+
+(define nPersonasR (vector->values (car(query-rows pgc "SELECT `perNumPersonasVivienda` FROM `ciudad` INNER join `persona` INNER JOIN `consumomensual` WHERE perCedula = 123 and ciuNombre = perCiudad")) 0 1))
+(define conMR (vector->values (car(query-rows pgc "SELECT `comConsumoMensual` FROM `ciudad` INNER join `persona` INNER JOIN `consumomensual` WHERE perCedula = 123 and ciuNombre = perCiudad")) 0 1))
+
+
+(vector->values(car (query-rows pgc "SELECT `comConsumoMensual` FROM `ciudad` INNER join `persona` INNER JOIN `consumomensual` on ciuNombre = perCiudad  WHERE ciuNombre = perCiudad")))
+
+
+
+(define promEmpirico (* conMR nPersonasR))
+(display promEmpirico)

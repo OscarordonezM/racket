@@ -1,0 +1,21 @@
+#lang racket
+(require db)
+
+(define pgc
+(mysql-connect   #:server "localhost"
+                 #:port 3306
+                 #:database "AquaBot"
+                 #:user "root"
+                 ))
+
+(define cedulaR (vector->values (car(query-rows pgc "select perCedula from persona Where perCedula = 123")) 0 1))
+(define nombreR (vector->values (car(query-rows pgc "select perNombres from persona Where perCedula = 123")) 0 1))
+(define apellidoR (vector->values (car(query-rows pgc "select perApellidos from persona Where perCedula = 123")) 0 1))
+(define sexoR (vector->values (car(query-rows pgc "select perSexo from persona Where perCedula = 123")) 0 1))
+(define estratoR (vector->values (car(query-rows pgc "select perEstrato from persona Where perCedula = 123")) 0 1))
+(define nPersonasR (vector->values (car(query-rows pgc "select perNumPersonasVivienda from persona Where perCedula = 123")) 0 1))
+
+(define conMR (vector->values (car(query-rows pgc "select comConsumoMensual from ConsumoMensual Where comCedula= 123")) 0 1))
+(define fechaR (vector->values (car(query-rows pgc "select comFecha from ConsumoMensual Where comCedula= 123")) 0 1))
+
+

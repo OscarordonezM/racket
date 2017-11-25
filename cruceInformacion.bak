@@ -1,0 +1,11 @@
+#lang racket
+(require db)
+
+(define pgc
+(mysql-connect   #:server "localhost"
+                 #:port 3306
+                 #:database "AquaBot"
+                 #:user "root"
+                 #:password "password"
+                 ))
+

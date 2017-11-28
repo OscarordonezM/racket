@@ -1,5 +1,5 @@
 #lang racket
-(require racket/gui)
+(require racket/gui/base)
 (require db)
 
 (define (conexion)
@@ -194,7 +194,7 @@ VALUES ("(number->string consumoMensual)",'"(symbol->string fechaConsumo)"',"(nu
 
 (define choice-seleccionar-usuario (new choice%
                       [label "Usuario"]
-                      [choices (list "usuario 1" "usuario 2")]
+                      [choices (list "123" "234")]
                       [parent panel-opciones-horizontal]
                     
                       ))
@@ -208,29 +208,53 @@ VALUES ("(number->string consumoMensual)",'"(symbol->string fechaConsumo)"',"(nu
 (define mostrar-Estudio (new text-field% [parent ventana-mostrar][label "Nivel Estudio "]))
 (define mostrar-num-Personas (new text-field% [parent ventana-mostrar][label "Num personas "]))
 (define mostrar-ciudad (new text-field% [parent ventana-mostrar][label "Ciudad"]))
+
 ;logica cargar datos
 
-(define (cargar valor)
+#|(define (cargar valor)
   (call-with-transaction (conexion)
                          (lambda ()
-                           (for ([(a b)
+                           (for ([(a b c d e f g h )
                                   (in-query (conexion) "SELECT perNombres, perApellidos, perFechaNacimiento, perSexo, perEstrato, perEstudios, perNumPersonasVivienda, perCiudad
                                    FROM persona WHERE perCedula = ?" valor
                                   #:fetch 1)])
-                             (llenar a b c d e f g h i)
-                             ))))
+                             (llenar a b c d e f g h )
+                             ))))|#
+
+(define listmostrar (query (conexion) "SELECT perCedula, perNombres, perApellidos, perFechaNacimiento, perSexo, perEstrato, perEstudios, perNumPersonasVivienda, perCiudad, comConsumoMensual, comFecha FROM `ciudad` INNER join `persona` INNER JOIN `consumomensual` on perCedula = comCedula WHERE ciuNombre = perCiudad;"))
+
+(define (cargar valor)
+(let loop ((l listmostrar)) 
+   (cond ((null? l) #f)
+         (else
+           (display (first l))
+           (loop (rest l)))))
+)
+
 ;llenar datos
-(define (llenar a b c d e f g h i))
-(send )
+(define (llenar a b c d e f g h i)
+  (send mostrar-nombre set-value (parsear a) )
+  (send mostrar-apellido set-value (parsear b))
+  (send mostrar-fecha set-value (parsear c))
+  (send mostrar-Genero set-value (parsear d))
+  (send mostrar-Estrato set-value (parsear e))
+  (send mostrar-Estudio set-value (parsear f))
+  (send mostrar-num-Personas set-value (parsear g))
+  (send mostrar-ciudad set-value (parsear h)))
+
+
 ;logica buscar usuario
 #|(define (buscar valor)
   (if(empty? (query-list (conexion)"SELECT perCedula FROM persona WHERE perCedula=?" valor))))
 |#
+
+  
 (define botonMostrar (new button%
                           [parent panel-opciones-horizontal]
                           [label "MOSTRAR"]
                           [callback (lambda (b c)
-                                      (send ventana-registro show #t))]));llamar mostrar informacion pendiente
+                                      (send ventana-mostrar show #t))]));llamar mostrar informacion pendiente
+
 (define botonGenerarRecibo (new button%
                                 [parent panel-opciones-vertical]
                                 [label "GENERAR RECIBO"]
@@ -262,5 +286,6 @@ VALUES ("(number->string consumoMensual)",'"(symbol->string fechaConsumo)"',"(nu
                      [parent ventana]
                      [auto-resize #t]
                      ))
+
 
 
